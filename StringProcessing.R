@@ -52,6 +52,8 @@ mydata.corpus <- tm_map(mydata.corpus, removeNumbers)
 my_stopwords <- c(stopwords('german'), "suche", "wohnung","zimmer", "wohnen" , "miet", "raum","jedoch" ,"evtl","bzw", "whg", "zieh", "wurd", "sollt", "jahrig" , "stuttgart", "hamburg", "berlin", "munchen", "such", "sucht" , "derzeit", "dass", "find" , "sowi",  "wohn", "per" ) #define generic and custom stopwords
 mydata.corpus <- tm_map(mydata.corpus, removeWords, my_stopwords)
 mydata.corpus<-tm_map(mydata.corpus, stemDocument, language="german") 
+mydata.corpus <- tm_map(mydata.corpus, removeWords, my_stopwords)
+
 
 # build a term-document matrix
 mydata.dtm <- TermDocumentMatrix(mydata.corpus)#,content_transformer(function(x) iconv(x, to='UTF-8-MAC', sub='byte')),mc.cores=1)
@@ -60,10 +62,9 @@ mydata.dtm <- TermDocumentMatrix(mydata.corpus)#,content_transformer(function(x)
 #inspect(mydata.dtm[1:1000,1:10])
 
 # inspect most popular words
-mydata.dtm.common <- removeSparseTerms(mydata.dtm, 0.98) 
+mydata.dtm.common <- removeSparseTerms(mydata.dtm, 0.95) 
 findFreqTerms(mydata.dtm.common, lowfreq=1)
 dim(mydata.dtm.common)
 inspect(mydata.dtm.common)
 
-
-class(mydata.dtm.common)
+mydata.df.common = as.data.frame(inspect(mydata.dtm.common))
