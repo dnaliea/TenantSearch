@@ -5,10 +5,11 @@
 #for that: convert ms to seconds
 ct<- content$modificationDate
 content$modificationDate<-as.POSIXct(ct/1000, origin="1970-01-01")
+rm(ct)
 
 #make data frame, and produce master copy
 content <- as.data.frame(content)
-content2 <- as.data.frame(content)
+content_master <- as.data.frame(content)
 
 #flatten nested lists for locations
 for (i in 1:length(content$locations)){
@@ -16,9 +17,11 @@ for (i in 1:length(content$locations)){
     content$district[i] =I(district_)
     city = (list(unique(content$locations[i][[1]]$cityName)))
     content$cityName[i] =I(city)}
+rm("city", "district_")
+rm(i)
 
 drops = "locations"
-content3 = content[,!(names(content) %in% drops)]
+content = content[,!(names(content) %in% drops)]
 
 #string processing: PETS
 require(stringr)
@@ -45,6 +48,10 @@ for (i in c(1:length(pets_))) {
             if (is.element(pets_[i], Hund)) pets__[i] = "dog" else pets__[i] = "Other"}}} 
 #table(unlist(pets__))
 content$pets = unlist(pets__)
+
+#get rid of everything except the content and functions
+keep = c("content", "content_master", "data")
+rm(list=ls()[!ls() %in% c(keep, (ls()[ls() %in%  lsf.str()]))])
 
 # THIS SECTION WOULD SEPERATE THE CONTENT INTO THREE DISTINCT TABLES: FEATURES; INFO AND TEST########
 
@@ -136,13 +143,15 @@ content$word_per_Text = sum(content$word_per_Text,contentText$words_per_searchRe
 content$sentences_per_Text = sum(content$sentences_per_Text,contentText$sentences_per_searchRequestAdditionalInfo )
 
 #get rid of everything except the content and functions
-keep = c("content", "content2","data")
+keep = c("content", "content_master","data")
 rm(list=ls()[!ls() %in% c(keep, (ls()[ls() %in%  lsf.str()]))])
 
 #numbers<-plyr::ldply(numbers, rbind)
 #text2<-as.data.frame(text_)
 #text2 <-cbind(text2,numbers)
 #names(text2)
+
+
 
 
 

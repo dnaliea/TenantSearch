@@ -3,7 +3,7 @@ library(devtools)
 require(qdap)
 require(tm)
 library("Rstem") 
-require("snowfall")
+#require("snowfall")
 require("SnowballC")
 library("twitteR")
 library("wordcloud")
@@ -14,7 +14,7 @@ library("wordcloud")
 #BoW_AddInfo<-lapply(contentText$searchRequestAdditionalInfo,  bag_o_words)
 
 # build a corpus
-doc.vec <- VectorSource(paste(content$searchRequestAdditionalInfo, content$profileAdditionalInfo,sep=" "))
+doc.vec <- VectorSource(paste(content$profession, content$searchRequestAdditionalInfo, content$profileAdditionalInfo,sep=" "))
 #paste("Hello", "world", sep=" ")
 mydata.corpus <- Corpus(doc.vec)
 
@@ -67,4 +67,13 @@ findFreqTerms(mydata.dtm.common, lowfreq=1)
 dim(mydata.dtm.common)
 inspect(mydata.dtm.common)
 
-mydata.df.common = as.data.frame(inspect(mydata.dtm.common))
+
+#http://stackoverflow.com/questions/17294824/counting-words-in-a-single-document-from-corpus-in-r-and-putting-it-in-dataframe
+mydata.df.common <- inspect(mydata.dtm.common)
+# convert the sparse term-document matrix to a standard data frame
+mydata.df <- as.data.frame(inspect(mydata.dtm.common))
+textFeat <- t(mydata.df)
+
+
+keep = c("content", "content_master","data", "textFeat")
+rm(list=ls()[!ls() %in% c(keep, (ls()[ls() %in%  lsf.str()]))])

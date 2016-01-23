@@ -39,3 +39,7 @@ for (i in 1:totalPages) {
     if (data$numberOfElements == 0) content = content
     else content = rbind.fill(content,data$content)
 }
+
+#get rid of everything except the content and functions
+keep = c("content", "data")
+rm(list=ls()[!ls() %in% c(keep, (ls()[ls() %in%  lsf.str()]))])
